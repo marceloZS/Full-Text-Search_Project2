@@ -54,6 +54,7 @@ class InvertedIndex:
         self.output_folder = output_folder
         self.dictionary = {}
         os.makedirs(output_folder, exist_ok=True)
+        self.block_handles = []
 
     def sort_terms(self):
         sorted_terms = sorted(self.dictionary)
@@ -131,58 +132,135 @@ class InvertedIndex:
         print("BLOCKS creation complete!")
         self.merge_blocks()
 
-    def _binary_search(self, term):
-        sorted_t = sorted(self.dictionary.keys()) 
-        left = 0 
-        right = len(sorted_t) - 1
-        result = []
-        
-        while left <= right:
-            mid = int((left + right) / 2)
-            if sorted_t[mid] == term:
-                return self.dictionary[sorted_t[mid]]
-            elif sorted_t[mid] < term:
-                left = mid + 1
+    #hacer un create del self
+
+    def create(self):
+        self.cant_blocks = 0
+        self.spimi_invert()
+
+    #Hacer una busuqeda binaria de los bloques para buscar el termino, tienes que halla la similitu de coseno en llo
+
+    def binary_search_term_blocks(self, term, block_handle):
+        low = 0
+        high = self.cant_blocks - 1
+        mid = None
+        found = False
+        while low <= high and not found:
+            mid = int((low + high)/2)
+            index = self.binary_search_term[mid]
+            key = self.keys[index]
+            if key == term:
+                return index
+            elif key < term:
+                low = mid + 1
             else:
-                right = mid - 1
+                high = mid - 1
         return None
     
-    
-    def _search(self, query): 
+
+    def binary_search_term(self, query):
         result = set([])
         words = query.split(' ')
         for word in words:
-            res = self._binary_search(word)
-            if res is not None:
-                result |= {res}
-                return list(result)
-            return list(result)
+            postings_list = []
+            for block_handle in self.block_handles:
+                posting_list_pointer = self.posting_lists[block_handle][word]
+                if posting_list_pointer is not None:
+                    start, end = posting_list_pointer
+                    postings_list.extend(range(start,end))
+                    if len(postings_list)>0:
+                        result.add(min(postings_list))
+                        if len(result)>0:
+                            break
+                        return list(result)
+                    return sorted(list(set(result)))
+                
+                return sorted(list(set(result)))
+            
+    def calculate_idf(self, term: str):
+        postings_list_term = self.binary_search_term(self.header_terms_file, self.index_file, term)
+        if postings_list_term is None:
+            return 0
+        document_frequency = len(postings_list_term)
+        total_documents = self.total_docs
+        idf = math.log(float(total_documents) / float(document_frequency), 10)
+        return idf
+    
+
+
         
+
+
+""""
 
         
     def calculate_idf(self, term: str):
-        postings_list_term = self._binary_search_term(self.header_terms_file, self.index_file, term)
-        if postings_list_term is None:
-            return 0
-        df_term = len(postings_list_term)
-        return math.log10(self.n / (df_term + 1))  
 
-    def calculate_document_normalization(self, docID):
+        tf_idf_dict = {}
+        for t, postings in term():
+            tf_idf_dict[term] = {}
+            df = len(postings)
+            idf = math.log(len(self.documents)/df)
+            for docId, freq in postings.items():
+                tf_idf_dict[term][docId] = (freq * idf)
+                return tf_idf_dict
+
+    def lenghts_binary(self, docID):
         doc_vector = self.get_document_vector(docID)
-        if not doc_vector:
-            return 0
-        return math.sqrt(sum(w ** 2 for w in doc_vector))   
+        vector_length = sum(math.sqrt(tf*idf) for tf, idf in doc_vector.items())
+        return vector_length
         
-    def calculate_cosine_similarity(self, docID, query):
-        query_vector = self.get_query_vector(query)
-        if not query_vector:
-            return 0
-        doc_vector = self.get_document_vector(docID)
-        if not doc_vector:
-            return 0
-        dot_product = sum(q * d for q, d in zip(query_vector, doc_vector))
-        query_norm = math.sqrt(sum(q ** 2 for q in query_vector))
-        doc_norm = self.calculate_document_normalization(docID)
-        if query_norm == 0 or doc_norm == 0:
-            return 0
-        return dot_product / (query_norm * doc_norm)
+    def cosine_similarity(query, total_docs, document_length):
+        query_vector = {}
+        for term in query:
+            if term in total_docs:
+                query_vector[term] = 1 
+                query_length = math.sqrt(sum(query_vector.values()) ** 2)
+                scores = {}
+                for term, postings in total_docs.items():
+                    for doc_id, tf_idf in postings.items():
+                        if doc_id not in scores:
+                            scores[doc_id] = 0
+                        scores[doc_id] += query_vector.get(term, 0) * tf_idf
+                    for doc_id, score in scores.items():
+                        scores[doc_id] /= (query_length * document_length[doc_id])
+                        return scores
+
+    #idea
+
+    def get_document_vector(self, docID):
+        document_vector = [0] * self.total_terms
+        postings_list = self.get_postings_list(docID)
+        if not postings_list:
+            return document_vector
+        for term, tf in postings_list:
+            term_id = self.get_term_id(term)
+            if term_id is not None:
+                document_vector[term_id] = tf * self.calculate_idf(term)
+        return document_vector
+
+    def get_query_vector(self, query):
+        query_vector = [0] * self.total_terms
+        query_terms = query.split()
+        for term in query_terms:
+            term_id = self.get_term_id(term)
+            if term_id is not None:
+                query_vector[term_id] += 1  
+        return query_vector
+
+if __name__ == "__main":
+    fashion_processor = FashionDataProcessor('csv/fashion_product_images.csv', 'unprocessed_txt')
+    fashion_processor.select_textual_columns()
+    fashion_processor.save_to_text_files()
+
+    docID = DEBERIA SER EL CONSINE PARA TODOS LOS DOCS, NO SOLO UNO
+
+    text_preprocessor = TextPreprocessor('unprocessed_txt', 'processed_txt')
+    text_preprocessor.process_text_files()
+
+    inverted_index = InvertedIndex('processed_txt', 900 * 100, 'output_folder')
+    inverted_index.spimi_invert()
+    query = "your query goes here"  # Reemplaza con tu consulta
+    cosine_similarity = inverted_index.calculate_cosine_similarity(docID, query)
+    print(f"Cosine Similarity between DocID {docID} and Query: {cosine_similarity}")
+    """    
