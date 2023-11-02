@@ -158,24 +158,45 @@ class InvertedIndex:
         return None
     
 
+    def cosine_similarity(query, total_docs, document_length):
+        query_vector = {}
+        for term in query:
+            if term in total_docs:
+                query_vector[term] = 1
+
+        query_length = math.sqrt(sum(query_vector.values()) ** 2)
+        scores = []
+
+        for doc_id, postings in total_docs.items():
+            doc_length = document_length[doc_id]
+            score = 0
+
+            for term, tf_idf in postings.items():
+                if term in query_vector:
+                    score += query_vector[term] * tf_idf
+
+            score /= (query_length * doc_length)
+            heapq.heappush(scores, (-score, doc_id))
+
+        top_scores = []
+        while scores:
+            top_scores.append(heapq.heappop(scores))
+
+        return top_scores
+
     def binary_search_term(self, query):
-        result = set([])
+        result = set()
         words = query.split(' ')
         for word in words:
             postings_list = []
             for block_handle in self.block_handles:
-                posting_list_pointer = self.posting_lists[block_handle][word]
+                posting_list_pointer = self.posting_lists[block_handle].get(word)
                 if posting_list_pointer is not None:
                     start, end = posting_list_pointer
-                    postings_list.extend(range(start,end))
-                    if len(postings_list)>0:
-                        result.add(min(postings_list))
-                        if len(result)>0:
-                            break
-                        return list(result)
-                    return sorted(list(set(result)))
-                
-                return sorted(list(set(result)))
+                    postings_list.extend(range(start, end))
+            if len(postings_list) > 0:
+                result.add(min(postings_list))
+        return sorted(list(result))
             
     def calculate_idf(self, term: str):
         postings_list_term = self.binary_search_term(self.header_terms_file, self.index_file, term)
