@@ -1,0 +1,91 @@
+import tkinter as tk
+from tkinter import ttk
+from PIL import Image, ImageTk
+import psycopg2
+import os
+
+def buscar():
+    texto_busqueda = entrada.get()
+
+    conexion = psycopg2.connect(
+        host="localhost",
+        database="BD2",
+        user="postgres",
+        password="cangrejoSJ20"
+    )
+    cursor = conexion.cursor()
+
+    consulta = "SELECT * FROM muertos"
+    cursor.execute(consulta)
+
+    resultados = cursor.fetchall()
+    for i, fila in enumerate(resultados):
+        if i < 10:  # Mostrar solo los primeros 10 resultados
+            resultados_text1.insert(tk.END, f"Resultado {i+1}: {fila}\n")
+
+    cursor.close()
+    conexion.close()
+
+ventana = tk.Tk()
+ventana.title("Super_proyecto_BD2")
+
+# Cargar el GIF animado
+ruta_fondo = os.path.join(os.path.dirname(__file__), "fondo.gif")
+gif = Image.open(ruta_fondo)
+frames = gif.n_frames
+
+# Crear una lista de imágenes para cada frame del GIF animado
+frames_imagenes = [ImageTk.PhotoImage(gif.copy().convert('RGBA')) for _ in range(frames)]
+
+# Función para actualizar el frame del GIF animado
+def actualizar_frame(indice):
+    frame = frames_imagenes[indice]
+    fondo.configure(image=frame)
+    ventana.after(100, lambda: actualizar_frame((indice + 1) % frames))
+
+# Widget Label para mostrar el GIF animado como fondo
+fondo = ttk.Label(ventana)
+fondo.place(x=0, y=0, relwidth=1, relheight=1)
+
+# Llamar a la función para actualizar el frame del GIF animado
+actualizar_frame(0)
+
+# Resto del código de la interfaz gráfica...
+
+entrada = ttk.Entry(ventana)
+entrada.pack()
+
+boton_buscar = ttk.Button(ventana, text="Buscar", command=buscar)
+boton_buscar.pack()
+
+contenedor = ttk.Frame(ventana)
+contenedor.pack(pady=20)  
+imagen_capibara = tk.PhotoImage(file="capibara.png")
+imagen_capibara = imagen_capibara.zoom(1)  
+label_imagen = ttk.Label(contenedor, image=imagen_capibara)
+label_imagen.grid(row=0, column=1, pady=20)  
+cuadro1 = ttk.Label(contenedor, text="Resultado 1: ", style="Resultado.TLabel")
+cuadro1.grid(row=0, column=0, padx=200)
+
+cuadro2 = ttk.Label(contenedor, text="Resultado 2: ", style="Resultado.TLabel")
+cuadro2.grid(row=0, column=2, padx=200) 
+style = ttk.Style()
+style.configure("Resultado.TLabel", foreground="black", borderwidth=2, relief="solid", padding=(10, 10))
+
+scrollbar1 = ttk.Scrollbar(contenedor)
+scrollbar1.grid(row=1, column=1, sticky="NS")
+
+resultados_text1 = tk.Text(contenedor, yscrollcommand=scrollbar1.set, height=10, bg='black', fg='cyan')
+resultados_text1.grid(row=1, column=0)
+
+scrollbar1.config(command=resultados_text1.yview)
+
+scrollbar2 = ttk.Scrollbar(contenedor)
+scrollbar2.grid(row=1, column=3, sticky="NS")
+
+resultados_text2 = tk.Text(contenedor, yscrollcommand=scrollbar2.set, height=10, bg='black', fg='cyan')
+resultados_text2.grid(row=1, column=2)
+
+scrollbar2.config(command=resultados_text2.yview)
+
+ventana.mainloop()
