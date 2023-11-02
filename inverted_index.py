@@ -183,6 +183,8 @@ class InvertedIndex:
             top_scores.append(heapq.heappop(scores))
 
         return top_scores
+    
+    
 
     def binary_search_term(self, query):
         result = set()
@@ -285,3 +287,5 @@ if __name__ == "__main":
     cosine_similarity = inverted_index.calculate_cosine_similarity(docID, query)
     print(f"Cosine Similarity between DocID {docID} and Query: {cosine_similarity}")
     """    
+    
+    
