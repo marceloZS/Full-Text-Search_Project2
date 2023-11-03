@@ -70,14 +70,16 @@ class InvertedIndex:
         pl_tftd = [[docId, counter[docId]] for docId in counter.keys()]
         return pl_tftd
 
-    def write_block_to_disk(self, block_number):
+    def write_block_to_disk(self, term_postings_list, block_number):
+        # Define block
         base_path = 'index_blocks/'
-        block_name = f'block-{block_number}.txt'
-        block = open(os.path.join(base_path, block_name), 'a+')
-        for term in self.dictionary:
-            block.write(f"{term}:{str(self.dictionary[term])}\n")
+        block_name = 'block-' + str(block_number) + '.txt'
+        block = open(base_path + block_name, 'a+')
+        print(" -- Writing term-positing list block: " + block_name + "...")
+        for index, term in enumerate(term_postings_list):
+            block.write(str(term) + ":" + str((term_postings_list[term])) + "\n")
         block.close()
-        self.dictionary = {}
+        self.dictionary={}
 
     def merge_blocks(self):
         block_files = [os.path.join('index_blocks', block) for block in os.listdir('index_blocks')]
@@ -118,8 +120,23 @@ class InvertedIndex:
                 documents_counter += 1
                 file_route = os.path.join(self.input_folder, docID)
                 file_content = open(file_route, encoding="utf-8").read().lower()
-                terms = file_content.split()
+                
+                '''Pre-processing'''
+                # Tokenizamos nuestro txt
+                tokens = nltk.word_tokenize(file_content)
+                #Filtramos para que no pertenezca a los stopwords o no sea un valor no alfanumerico (Stopwords / Valores raros)
+                terms = [word for word in tokens if not word in TextPreprocessor.stopwords and re.match("^[a-zA-Z]+$", word)]
+                #Hacemos Stemming en el idioma respectivo
+                terms = [TextPreprocessor.stemmer.stem(w) for w in terms]
+
                 for term in terms:
+
+                    if (sys.getsizeof(term) + sys.getsizeof([docID]) + sys.getsizeof(self.dictionary) > self.block_size_limit):
+                        temp_dict = self.sort_terms()
+                        self.write_block_to_disk(temp_dict, block_number)
+                        temp_dict = {}
+                        block_number += 1
+
                     if term not in self.dictionary:
                         self.dictionary[term] = [docID]
                     else:
@@ -127,7 +144,8 @@ class InvertedIndex:
 
                 if sys.getsizeof(self.dictionary) > self.block_size_limit or (documents_counter == documents_count - 1):
                     temp_dict = self.sort_terms()
-                    self.write_block_to_disk(block_number)
+                    self.write_block_to_disk(temp_dict, block_number)
+                    temp_dict = {}
                     block_number += 1
         print("BLOCKS creation complete!")
         self.merge_blocks()
