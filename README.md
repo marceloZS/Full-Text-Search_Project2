@@ -37,6 +37,13 @@ El presente proyecto tiene como objetivo desarrollar esta estructura de datos de
 La base de datos utilizada es la Fashion Product Images. Esta contiene alrededor de 44 mil productos etiquetados por ID, categoría, género, color, año, etc.
 
 # Estructura del proyecto
+El algoritmo SPIMI (Single-Pass In-Memory Indexing) es un método utilizado para construir un índice invertido durante el proceso de indexación de grandes conjuntos de datos. A diferencia de algunos algoritmos de indexación que requieren múltiples pasadas sobre los datos, SPIMI realiza la construcción del índice en una sola pasada a través de los datos.
+
+![spimi1](https://github.com/marceloZS/Full-Text-Search_Project2/blob/main/imagenes/spimi1.jpg)
+
+Se calcula una sola vez la longitud de cada documento, y se lee el documento de entrada uno a uno (por ejemplo, un documento de texto) y se tokeniza en términos individuales. Cada término se procesa por separado.
+
+![spimi2](https://github.com/marceloZS/Full-Text-Search_Project2/blob/main/imagenes/spimi2.jpeg)
 
 # Frontend (GUI)
 
