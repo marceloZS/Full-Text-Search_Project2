@@ -1,18 +1,39 @@
 # Full-Text-Search_Project2
 Proyecto 2 del curso de Base de datos 2. Construcción del índice invertido textual.
 
-# Integrantes
-- Ana Maria Accilio
-- Diego Pacheco
-- Juan Pedro Vásquez
-- Luis Enrique Cortijo
-- Marcelo Zuloeta
+# Team - Group 5
+| <a href="https://github.com/anamariaaccilio" target="_blank">**Ana Maria Accilio Villanueva**</a> | <a href="https://github.com/Diegospf12" target="_blank">**Diego Pacheco Ferrel**</a> | <a href="https://github.com/juanpedrovv" target="_blank">**Juan Pedro Vasquez Vilchez**</a> | <a href="https://github.com/LuisEnriqueCortijoGonzales" target="_blank">**Luis Enrique Cortijo Gonzales**</a> | <a href="https://github.com/marceloZS" target="_blank">**Marcelo Mario Zuloeta Salazar**</a> |
+| :----------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------: |
+| <img src="https://avatars.githubusercontent.com/u/91237434?v=4" alt="drawing" width="200"/> | <img src="https://avatars.githubusercontent.com/u/94090499?v=4" alt="drawing" width="200"/> | <img src="https://avatars.githubusercontent.com/u/83739305?v=4" alt="drawing" width="200"/> | <img src="https://avatars.githubusercontent.com/u/84096868?v=4" alt="drawing" width="200"/> | <img src="https://avatars.githubusercontent.com/u/85197213?v=4" alt="drawing" width="200"/> |
+
+<a name="readme-top"></a>
+<details open>
+  <summary><h2>Tabla de contenidos:<h2></summary>
+  <ul>
+    <li><a href="#Introducción-🖊">Introducción
+      <ul>
+        <li><a href="#objetivo-del-proyecto">Objetivo del proyecto</a></li>
+        <li><a href="#Dominio-de-datos">Dominio de datos</a></li>
+      </ul>
+    </a></li> 
+    <li><a href="#Estructura-del-proyecto">Estructura del proyecto</a></li>
+    <li><a href="#Frontend-(GUI)">Frontend (GUI)</a></li>
+    <li><a href="#Resultados-experimentales">Resultados experimentales</a></li>
+    <li><a href="#Gráfico-Comprativo">Gráfico comparativo de las técnicas de indexación</a></li>
+    <li><a href="#conclusiones">Conclusiones</a></li>
+    <li><a href="#Team-group5">Team - Group 5</a></li>
+    <li><a href="#referencias-bibliográficas">Referencias bibliográficas</a></li>
+</details>
+
+<hr>
 
 # Introducción
 El índice invertido es una estructura de datos utilizada en motores de búsqueda y sistemas de recuperación de información. Consiste en un diccionario que mapea términos a una lista de documentos en los que aparecen esos términos. Esta estructura permite una búsqueda eficiente de documentos que contengan ciertos términos clave. 
+
+## Objetivo del proyecto
 El presente proyecto tiene como objetivo desarrollar esta estructura de datos de manera eficiente, con motivo de realizar búsquedas rápidas en un conjunto de documentos.
 
-# Dataset
+# Dominio de datos
 La base de datos utilizada es la Fashion Product Images. Esta contiene alrededor de 44 mil productos etiquetados por ID, categoría, género, color, año, etc.
 
 # Estructura del proyecto
