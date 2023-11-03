@@ -158,14 +158,15 @@ Una vez que se han extraído los términos y se ha creado la tabla de relación,
 
 Con el índice invertido ya construído se pueden realizar consultas de búsqueda utilizando cláusulas SQL como WHERE y JOIN. Estas consultas aprovechan los índices para buscar rápidamente los documentos que contienen los términos de búsqueda especificados. Por tal motivo, las búsquedas de texto se vuelven más eficientes, ya que se evita la necesidad de realizar exploraciones completas de los documentos.
 
-#Experimentacion
+# Experimentacion
 
 |      | Implementación | Postgress |
 |------|----------------|-----------|
-| 1000 |                |   19 ms   |
-| 2000 |                |   33 ms   |
-| 4000 |                |   72 ms   |
-| 8000 |                |  180 ms   |
-|16000 |                |  300 ms   |
-|32000 |                |  359 ms   |
-|64000 |                |  360 ms   |
+| 1000 |     15 ms      |   19 ms   |
+| 2000 |     34 ms      |   33 ms   |
+| 4000 |     65 ms      |   72 ms   |
+| 8000 |    190 ms      |  180 ms   |
+|16000 |    295 ms      |  300 ms   |
+|32000 |    333 ms      |  359 ms   |
+|64000 |    380 ms      |  360 ms   |
+
