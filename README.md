@@ -159,20 +159,21 @@ A grandes rasgos, para la construcción del índice invertido en PostgreSQL se n
 - Una tabla de relación entre términos y documentos
 
 A partir de esto, se requere extraer los términos de los documentos y almacenarlos en una tabla de términos. Por ejemplo, se tiene lo siguiente:
-Code:
+```sql
 INSERT INTO terms (term)
 SELECT DISTINCT unnest(string_to_array(lower(content), ' ')) AS term
 FROM documents;
+```
 
 La función string_to_array se utiliza para dividir el contenido de los documentos en términos individuales, y la función unnest se utiliza para convertir el resultado en filas individuales.
 
 Lo siguiente es armar la relación entre los documentos y términos. Esto se puede lograr utilizando consultas SQL que identifiquen los términos que aparecen en cada documento y los almacenen en la tabla de relación. Por ejemplo:
-Code:
+```sql
 INSERT INTO document_term (document_id, term)
 SELECT d.id, t.term
 FROM documents d
 JOIN terms t ON lower(d.content) LIKE '%' || t.term || '%';
-
+```
 Una vez que se han extraído los términos y se ha creado la tabla de relación, se pueden crear índices en las columnas relevantes para mejorar el rendimiento de las consultas de búsqueda. Por lo general, se crean índices en las columnas de términos y en las columnas de identificadores de documentos para acelerar las búsquedas.
 
 Con el índice invertido ya construído se pueden realizar consultas de búsqueda utilizando cláusulas SQL como WHERE y JOIN. Estas consultas aprovechan los índices para buscar rápidamente los documentos que contienen los términos de búsqueda especificados. Por tal motivo, las búsquedas de texto se vuelven más eficientes, ya que se evita la necesidad de realizar exploraciones completas de los documentos.
