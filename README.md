@@ -114,6 +114,22 @@ diccionario_temporal = {    'aaron':[['doc11987.txt', 1]],
                             'abf':[['doc1156.txt', 3]],
                             'abraim':[['doc12081.txt', 1]]  }
 ```
+- Finalmente, este diccionario modificado lo cargamos a memoria secundaria con el método write_block_to_disk(self, term_postings_list, block_number), generando así un bloque (indice invertido local).
+
+**Una vez se hayan terminado de procesar todos los documentos, y con ello haber creado todos los bloques, mergearemos todos estos bloques para crear un indice invertido global repartido en los n bloques.**
+
+```python
+        print("BLOCKS creation complete!")
+        self.merge_blocks()
+```
+
+```python
+Insertar codigo de merge blocks
+
+
+```
+Explicar código de merge blocks
+
 
 
 # ¿Cómo se construye el índice invertido en PostgreSQL?
