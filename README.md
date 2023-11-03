@@ -39,8 +39,6 @@ El código incluye las siguientes funciones principales:
 
 ## 1. MÉTODO SPIMI INVERT()
 
-Leemos uno a uno de nuestros documentos no pre-procesados
-
 ```python
 
 def spimi_invert(self):
@@ -57,10 +55,7 @@ def spimi_invert(self):
 
 ```
 
-Una vez obtenemos el documento no procesado:
-- Lo tokenizamos
-- Filtramos las Stopwords
-- Hacemos Stemming
+Leemos uno a uno de nuestros documentos no pre-procesados
 
 ```python
                 '''Pre-processing'''
@@ -70,6 +65,54 @@ Una vez obtenemos el documento no procesado:
                 terms = [word for word in tokens if not word in TextPreprocessor.stopwords and re.match("^[a-zA-Z]+$", word)]
                 #Hacemos Stemming en el idioma respectivo
                 terms = [TextPreprocessor.stemmer.stem(w) for w in terms]
+```
+Una vez obtenemos el documento no procesado:
+- Lo tokenizamos
+- Filtramos las Stopwords
+- Hacemos Stemming
+
+```python
+                for term in terms:
+
+                    if (sys.getsizeof(term) + sys.getsizeof([docID]) + sys.getsizeof(self.dictionary) > self.block_size_limit):
+                        temp_dict = self.sort_terms()
+                        self.write_block_to_disk(temp_dict, block_number)
+                        temp_dict = {}
+                        block_number += 1
+
+                    if term not in self.dictionary:
+                        self.dictionary[term] = [docID]
+                    else:
+                        self.dictionary[term].append(docID)
+
+                if sys.getsizeof(self.dictionary) > self.block_size_limit or (documents_counter == documents_count - 1):
+                    temp_dict = self.sort_terms()
+                    self.write_block_to_disk(temp_dict, block_number)
+                    temp_dict = {}
+                    block_number += 1
+```
+
+Una vez ya pre-procesado el documento, leemos uno a uno los términos de este, y los vamos agregando al diccionario de la siguiente forma:
+
+```python
+diccionario = {'baron':['doc1278.txt', 'doc1299.txt'],
+        'zascuss':['doc1278.txt'],
+        'abbi': ['doc1299.txt'],
+        'abraim' : ['doc12081.txt']
+}
+```
+
+Una vez este diccionario llegue al límite de RAM:
+
+- Ordenaremos este diccionario en orden alfabético (sort_terms(self))
+- y agregaremos su term frequency de la siguiente forma (sort_terms(self) llama al método calculate_tftd(self, pl_with_duplicates)):
+
+```python
+diccionario_temporal = {    'aaron':[['doc11987.txt', 1]],
+                            'abascuss':[['doc1278.txt', 1], ['doc1998.txt', 6]],
+                            'abbi':[['doc1299.txt', 2]],
+                            'abf':[['doc1156.txt', 3]],
+                            'abraim':[['doc12081.txt', 1]]  }
 ```
 
 
