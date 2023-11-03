@@ -18,10 +18,10 @@ Proyecto 2 del curso de Base de datos 2. Construcción del índice invertido tex
     </a></li> 
     <li><a href="#Estructura-del-proyecto">Estructura del proyecto</a></li>
     <li><a href="#Frontend-(GUI)">Frontend (GUI)</a></li>
-    <li><a href="#Resultados-experimentales">Resultados experimentales</a></li>
-    <li><a href="#Gráfico-Comprativo">Gráfico comparativo de las técnicas de indexación</a></li>
+    <li><a href="#Backend-(SPIMI)">Backend (SPIMI)</a></li>
+    <li><a href="#¿Cómo-se-construye-el-índice-invertido-en-PostgreSQL?">¿Cómo se construye el índice invertido en PostgreSQL?</a></li>
+    <li><a href="#Experimentación">Experimentación</a></li>
     <li><a href="#conclusiones">Conclusiones</a></li>
-    <li><a href="#Team-group5">Team - Group 5</a></li>
     <li><a href="#referencias-bibliográficas">Referencias bibliográficas</a></li>
 </details>
 
