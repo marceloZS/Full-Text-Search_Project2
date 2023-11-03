@@ -57,7 +57,20 @@ def spimi_invert(self):
 
 ```
 
+Una vez obtenemos el documento no procesado:
+- Lo tokenizamos
+- Filtramos las Stopwords
+- Hacemos Stemming
 
+```python
+                '''Pre-processing'''
+                # Tokenizamos nuestro txt
+                tokens = nltk.word_tokenize(file_content)
+                #Filtramos para que no pertenezca a los stopwords o no sea un valor no alfanumerico (Stopwords / Valores raros)
+                terms = [word for word in tokens if not word in TextPreprocessor.stopwords and re.match("^[a-zA-Z]+$", word)]
+                #Hacemos Stemming en el idioma respectivo
+                terms = [TextPreprocessor.stemmer.stem(w) for w in terms]
+```
 
 
 # ¿Cómo se construye el índice invertido en PostgreSQL?
