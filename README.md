@@ -158,7 +158,7 @@ Una vez que se han extraído los términos y se ha creado la tabla de relación,
 
 Con el índice invertido ya construído se pueden realizar consultas de búsqueda utilizando cláusulas SQL como WHERE y JOIN. Estas consultas aprovechan los índices para buscar rápidamente los documentos que contienen los términos de búsqueda especificados. Por tal motivo, las búsquedas de texto se vuelven más eficientes, ya que se evita la necesidad de realizar exploraciones completas de los documentos.
 
-# Experimentacion
+# Experimentación
 
 |      | Implementación | Postgress |
 |------|----------------|-----------|
@@ -170,3 +170,14 @@ Con el índice invertido ya construído se pueden realizar consultas de búsqued
 |32000 |    333 ms      |  359 ms   |
 |64000 |    380 ms      |  360 ms   |
 
+Implementación de Índice Invertido
+
+Nuestra implementación personalizada de índice invertido ha demostrado ser eficiente en la búsqueda de datos basada en texto. Hemos medido el rendimiento de nuestra implementación en milisegundos para una variedad de tamaños de datos de prueba, desde 1,000 hasta 64,000 registros. 
+
+PostgreSQL con Índice Invertido
+
+Por otro lado, hemos utilizado PostgreSQL con sus propios índices invertidos para realizar búsquedas de texto similares a nuestras pruebas con datos de prueba de tamaños comparables.
+
+Conclusión
+
+Los resultados de nuestra comparación indican que PostgreSQL supera ligeramente a nuestra implementación personalizada de índice invertido en términos de rendimiento en la mayoría de los escenarios. Aunque nuestra implementación es eficiente, PostgreSQL, con su optimización interna y capacidad para manejar grandes conjuntos de datos, muestra tiempos de búsqueda ligeramente más bajos en las pruebas.
