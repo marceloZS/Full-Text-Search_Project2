@@ -21,17 +21,11 @@ La base de datos utilizada es la Fashion Product Images. Esta contiene alrededor
 
 # Frontend (GUI)
 
-[imagen del front]
-
-
-
-[otra imagen del front]
-
-[capybara logo]
+![[imagen del front]](https://github.com/marceloZS/Full-Text-Search_Project2/blob/main/imagenes/imagen_front_principal.png)
+![[capybara logo]](https://github.com/marceloZS/Full-Text-Search_Project2/blob/main/imagenes/logo.png)
 
 ¿Cómo se utiliza la GUI?
-La GUI tiene una pantalla principal con dos pestañas, donde se puede visualizar una casilla para introducir una consulta.
-
+Dentro de la carpeta frontend se ejecuta el archivo main.py, este desplegara una ventana en la cual se puede crear un usuario o inciar sesion. Posteriormente en la ventana principal podras realizar la busqueda ingresando una busqueda textual y el numero que se desea. en la lista inferior apareceran los resultados y a su vez se mostrara el tiempo que tardo y el total de resultados que se retornan al realizar la consulta.
 # Backend (SPIMI)
 El archivo inverted_index.py contiene la implementación del índice invertido utilizando el algoritmo SPIMI (Single-Pass In-Memory Indexing). El algoritmo SPIMI divide el proceso de indexación en bloques más pequeños para manejar grandes volúmenes de datos de manera eficiente.
 
