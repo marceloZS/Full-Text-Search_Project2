@@ -1,4 +1,5 @@
 import os
+from typing import Any
 import pandas as pd
 import numpy as np
 import nltk
@@ -128,7 +129,7 @@ class InvertedIndex:
                 terms = [word for word in tokens if not word in TextPreprocessor.stopwords and re.match("^[a-zA-Z]+$", word)]
                 #Hacemos Stemming en el idioma respectivo
                 terms = [TextPreprocessor.stemmer.stem(w) for w in terms]
-
+                self.total_terms += len(terms)
                 for term in terms:
 
                     if (sys.getsizeof(term) + sys.getsizeof([docID]) + sys.getsizeof(self.dictionary) > self.block_size_limit):
@@ -150,31 +151,53 @@ class InvertedIndex:
         print("BLOCKS creation complete!")
         self.merge_blocks()
 
-    #hacer un create del self
 
     def create(self):
-        self.cant_blocks = 0
+        self.n = 0
+        self.total_terms = 0
         self.spimi_invert()
 
-    #Hacer una busuqeda binaria de los bloques para buscar el termino, tienes que halla la similitu de coseno en llo
 
     def binary_search_term_blocks(self, term, block_handle):
         low = 0
         high = self.cant_blocks - 1
-        mid = None
-        found = False
-        while low <= high and not found:
-            mid = int((low + high)/2)
-            index = self.binary_search_term[mid]
-            key = self.keys[index]
-            if key == term:
-                return index
-            elif key < term:
-                low = mid + 1
-            else:
-                high = mid - 1
-        return None
+        while low <= high:
+            mid = (low + high) // 2
+            block_filename = os.path.join(self.output_folder, f'block-{mid}.txt')
+            with open(block_filename, 'r', encoding='utf-8') as block_file:
+                for line in block_file:
+                    block_term, postings = line.strip().split(':', 1)
+                    if block_term == term:
+                        return eval(postings)
+                    elif block_term > term:
+                        high = mid - 1
+                    else:
+                        low = mid + 1
+        return []
+
+    def search_term(self, term):
+        results = []
+        for block_handle in self.block_handles:
+            term_postings = self.binary_search_term_blocks(term, block_handle)
+            if term_postings:
+                results.extend(term_postings)
+        return results
     
+    def obtain_lenghts_binary(self, lenght:str):
+        lenght = lenght(int)
+        list_of_files = glob.glob(os.path.join(self.output_folder,'*'))
+        files_with_length = [fname for fname in list_of_files if int(re.findall('\d+',
+                                                                                fname)[0])==lenght]
+        return 
+
+
+    def calculate_idf(self, term: str):
+        """Calculate the inverse document frequency of a given term."""
+        documents_with_term = len(self.get_documents_with_term(term))
+        total_docs = len(self.documents())
+        idf = math.log(total_docs / documents_with_term)
+        return idf
+    """"
 
     def cosine_similarity(query, total_docs, document_length):
         query_vector = {}
@@ -226,76 +249,18 @@ class InvertedIndex:
         total_documents = self.total_docs
         idf = math.log(float(total_documents) / float(document_frequency), 10)
         return idf
+    """
     
 
 
-        
 
-
-""""
-
-        
-    def calculate_idf(self, term: str):
-
-        tf_idf_dict = {}
-        for t, postings in term():
-            tf_idf_dict[term] = {}
-            df = len(postings)
-            idf = math.log(len(self.documents)/df)
-            for docId, freq in postings.items():
-                tf_idf_dict[term][docId] = (freq * idf)
-                return tf_idf_dict
-
-    def lenghts_binary(self, docID):
-        doc_vector = self.get_document_vector(docID)
-        vector_length = sum(math.sqrt(tf*idf) for tf, idf in doc_vector.items())
-        return vector_length
-        
-    def cosine_similarity(query, total_docs, document_length):
-        query_vector = {}
-        for term in query:
-            if term in total_docs:
-                query_vector[term] = 1 
-                query_length = math.sqrt(sum(query_vector.values()) ** 2)
-                scores = {}
-                for term, postings in total_docs.items():
-                    for doc_id, tf_idf in postings.items():
-                        if doc_id not in scores:
-                            scores[doc_id] = 0
-                        scores[doc_id] += query_vector.get(term, 0) * tf_idf
-                    for doc_id, score in scores.items():
-                        scores[doc_id] /= (query_length * document_length[doc_id])
-                        return scores
-
-    #idea
-
-    def get_document_vector(self, docID):
-        document_vector = [0] * self.total_terms
-        postings_list = self.get_postings_list(docID)
-        if not postings_list:
-            return document_vector
-        for term, tf in postings_list:
-            term_id = self.get_term_id(term)
-            if term_id is not None:
-                document_vector[term_id] = tf * self.calculate_idf(term)
-        return document_vector
-
-    def get_query_vector(self, query):
-        query_vector = [0] * self.total_terms
-        query_terms = query.split()
-        for term in query_terms:
-            term_id = self.get_term_id(term)
-            if term_id is not None:
-                query_vector[term_id] += 1  
-        return query_vector
+    
 
 if __name__ == "__main":
     fashion_processor = FashionDataProcessor('csv/fashion_product_images.csv', 'unprocessed_txt')
     fashion_processor.select_textual_columns()
     fashion_processor.save_to_text_files()
-
-    docID = DEBERIA SER EL CONSINE PARA TODOS LOS DOCS, NO SOLO UNO
-
+    docID = 1
     text_preprocessor = TextPreprocessor('unprocessed_txt', 'processed_txt')
     text_preprocessor.process_text_files()
 
@@ -304,6 +269,3 @@ if __name__ == "__main":
     query = "your query goes here"  # Reemplaza con tu consulta
     cosine_similarity = inverted_index.calculate_cosine_similarity(docID, query)
     print(f"Cosine Similarity between DocID {docID} and Query: {cosine_similarity}")
-    """    
-    
-    
