@@ -37,7 +37,30 @@ El código incluye las siguientes funciones principales:
 
 3. cosine_similarity(): Esta función calcula la similitud de coseno entre una consulta y los documentos indexados. Utiliza el índice invertido y los pesos TF-IDF para calcular la similitud de coseno.
 
-## ¿Cómo se construye el índice invertido en PostgreSQL?
+## 1. MÉTODO SPIMI INVERT()
+
+Leemos uno a uno de nuestros documentos no pre-procesados
+
+```python
+
+def spimi_invert(self):
+        documents = os.listdir(self.input_folder)
+        documents_count = len(documents)
+        documents_counter = 0
+        block_number = 0
+
+        for docID in documents:
+            if docID.endswith(".txt"):
+                documents_counter += 1
+                file_route = os.path.join(self.input_folder, docID)
+                file_content = open(file_route, encoding="utf-8").read().lower()
+
+```
+
+
+
+
+# ¿Cómo se construye el índice invertido en PostgreSQL?
 
 A grandes rasgos, para la construcción del índice invertido en PostgreSQL se necesitan 3 tablas principales.
 - Una tabla para almacenar los documentos
