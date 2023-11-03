@@ -17,8 +17,6 @@ La base de datos utilizada es la Fashion Product Images. Esta contiene alrededor
 
 # Estructura del proyecto
 
-[image]
-
 # Frontend (GUI)
 
 ![[imagen del front]](https://github.com/marceloZS/Full-Text-Search_Project2/blob/main/imagenes/imagen_front_principal.png)
